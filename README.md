@@ -1,2 +1,3 @@
-# credit-card-spend-analyzer-reward-points-redemption-advisor
-Exported from Caffeine project: Credit Card Spend Analyzer + Reward Points Redemption Advisor
+## Credit Card Spend Analyzer + Reward Points Redemption Advisor
+
+To run app build and run docker image: `docker build -t app . docker run -it --network host app`

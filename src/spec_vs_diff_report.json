@@ -1,0 +1,119 @@
+{
+  "kind": "spec_vs_diff_report",
+  "version": "1.0",
+  "generatedAt": "2026-02-10T14:15:33.077Z",
+  "summary": "Diff adds substantial frontend UI for auth gating, transactions entry/table/filtering, CSV import wizard, analytics widgets, reward profiles/options and redemption recommendations, plus a backend actor with user profile + reward profiles storage using Principal-keyed maps and an authorization mixin. However, key requirements around transactions backend CRUD + stable persistence, full rewards CRUD, help/disclaimer content, and generated image assets/illustration are not evidenced in the provided diff summary.",
+  "missing_requirements": [
+    {
+      "id": "REQ-2",
+      "requirement": "Create a Transactions data model and CRUD API in the Motoko backend to store credit card spend records per user, including list filtering by date range, and persist across canister upgrades via stable storage.",
+      "reason": "The shown backend code defines user profiles and reward profiles, but no transaction type/storage or CRUD methods are visible, and no stable storage pattern is evidenced in the snippet.",
+      "evidence": [
+        "backend/main.mo (truncated)"
+      ]
+    },
+    {
+      "id": "REQ-6",
+      "requirement": "Allow users to add/edit/delete a reward program profile and multiple redemption options under it, persisted per user.",
+      "reason": "Backend/Frontend evidence shows adding reward profiles and adding redemption options, but edit/delete for reward profiles and redemption options is not evidenced in the diff summary.",
+      "evidence": [
+        "backend/main.mo (truncated)",
+        "frontend/src/components/rewards/RewardProfileForm.tsx",
+        "frontend/src/components/rewards/RedemptionOptionForm.tsx",
+        "frontend/src/components/rewards/RewardProfilesList.tsx (truncated)"
+      ]
+    },
+    {
+      "id": "REQ-9",
+      "requirement": "Add an onboarding/help section accessible from main navigation with English disclaimers (educational, user-entered data, not financial advice) and explanations for CSV import and CPP calculation.",
+      "reason": "A /help route and HelpPage import are present, but no HelpPage content/disclaimer text is shown in the diff summary, so implementation cannot be confirmed.",
+      "evidence": [
+        "frontend/src/App.tsx",
+        "frontend/src/components/layout/AppShell.tsx"
+      ]
+    },
+    {
+      "id": "REQ-11",
+      "requirement": "Add generated static image assets (logo + dashboard illustration) under frontend/public/assets/generated and display them (logo in header/login and illustration on an empty state).",
+      "reason": "The logo is referenced in the header, but the actual assets and the required dashboard illustration usage are not evidenced in the visible diff summary.",
+      "evidence": [
+        "frontend/src/components/layout/AppShell.tsx"
+      ]
+    }
+  ],
+  "hallucinated_features": [
+    {
+      "description": "User profile management (save/get profile) with an authorization/admin access-control system in the backend.",
+      "reason": "BuildRequest does not ask for user profile objects, admin roles, or an access-control subsystem beyond scoping data per authenticated user.",
+      "evidence": [
+        "backend/main.mo (truncated)"
+      ]
+    },
+    {
+      "description": "Support for multiple crypto/extra currencies (BTC/ICP/ETH/XMR/RUB/etc.) in backend Currency type.",
+      "reason": "BuildRequest only requires a transaction currency field but does not request specific crypto/extra currency variants.",
+      "evidence": [
+        "backend/main.mo (truncated)"
+      ]
+    },
+    {
+      "description": "Footer attribution link to caffeine.ai in the app shell.",
+      "reason": "No requirement requests this branding/attribution footer link.",
+      "evidence": [
+        "frontend/src/components/layout/AppShell.tsx"
+      ]
+    }
+  ],
+  "confidence": 0.62,
+  "changed_files": [
+    "all_files_summary.json",
+    "backend/main.mo",
+    "frontend-file-summaries.txt",
+    "frontend/index.css",
+    "frontend/index.html",
+    "frontend/src/App.tsx",
+    "frontend/src/components/auth/AuthGate.tsx",
+    "frontend/src/components/auth/LoginButton.tsx",
+    "frontend/src/components/auth/ProfileSetupModal.tsx",
+    "frontend/src/components/dashboard/CategoryBreakdownChart.tsx",
+    "frontend/src/components/dashboard/DateRangePicker.tsx",
+    "frontend/src/components/dashboard/MonthlyTotalsChart.tsx",
+    "frontend/src/components/dashboard/PointsEstimateSummary.tsx",
+    "frontend/src/components/dashboard/TopMerchantsList.tsx",
+    "frontend/src/components/layout/AppShell.tsx",
+    "frontend/src/components/rewards/RedemptionOptionForm.tsx",
+    "frontend/src/components/rewards/RedemptionRecommendations.tsx",
+    "frontend/src/components/rewards/RewardProfileForm.tsx",
+    "frontend/src/components/rewards/RewardProfilesList.tsx",
+    "frontend/src/components/settings/EarningRatesEditor.tsx",
+    "frontend/src/components/transactions/CsvImportWizard.tsx",
+    "frontend/src/components/transactions/TransactionFilters.tsx",
+    "frontend/src/components/transactions/TransactionForm.tsx",
+    "frontend/src/components/transactions/TransactionsTable.tsx",
+    "frontend/src/hooks/useActor.ts",
+    "frontend/src/hooks/useCurrentUserProfile.ts",
+    "frontend/src/hooks/useEarningRates.ts",
+    "frontend/src/hooks/useInternetIdentity.ts",
+    "frontend/src/hooks/useRewardAdvisorySettings.ts",
+    "frontend/src/hooks/useRewardProfiles.ts",
+    "frontend/src/hooks/useTransactions.ts",
+    "frontend/src/index.css",
+    "frontend/src/main.tsx",
+    "frontend/src/pages/DashboardPage.tsx",
+    "frontend/src/pages/HelpPage.tsx",
+    "frontend/src/pages/LandingPage.tsx",
+    "frontend/src/pages/RewardsPage.tsx",
+    "frontend/src/pages/TransactionsPage.tsx",
+    "frontend/src/types/earningRates.ts",
+    "frontend/src/types/rewards.ts",
+    "frontend/src/types/transactions.ts",
+    "frontend/src/utils/analytics.ts",
+    "frontend/src/utils/csv.ts",
+    "frontend/src/utils/pointsEstimate.ts",
+    "frontend/src/utils/recommendations.ts",
+    "frontend/src/utils/rewardsMath.ts",
+    "frontend/src/utils/urlParams.ts",
+    "frontend/tailwind.config.js",
+    "project_state.json"
+  ]
+}

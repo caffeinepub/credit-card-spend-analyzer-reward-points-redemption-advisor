@@ -1,0 +1,8 @@
+{
+  "frontend/src/components/rewards/RedemptionOptionForm.tsx": "Form component for adding redemption options to reward programs with real-time CPP preview calculation. Fixed to use `type` instead of `type_` to match backend interface.",
+  "frontend/src/components/rewards/RewardProfilesList.tsx": "Displays list of reward programs with their redemption options, showing CPP badges and net values. Fixed to use `type` instead of `type_` to match backend interface.",
+  "frontend/src/components/rewards/RedemptionRecommendations.tsx": "Shows ranked redemption recommendations with configurable low-value threshold, sorting options, and detailed explanations for each option.",
+  "frontend/src/components/settings/EarningRatesEditor.tsx": "Editor for configuring earning rate assumptions by category, used to estimate points earned from spending.",
+  "frontend/src/index.css": "Global styles with warm neutral OKLCH color palette (avoiding blue/purple) for light and dark modes, suitable for a personal finance application.",
+  "frontend/tailwind.config.js": "Tailwind configuration extending the theme with warm neutral color tokens and custom design system for the finance app aesthetic."
+}

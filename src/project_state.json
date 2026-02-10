@@ -1,0 +1,117 @@
+{
+  "schemaVersion": "1.0.0",
+  "projectStateVersion": 3,
+  "summary": "Build an app to analyze credit card spending and provide guidance on the correct/optimal way to redeem reward points.",
+  "architectural_notes": [],
+  "known_issues": [],
+  "isFixRequest": false,
+  "imageRequirements": "## Required Images\n- Personal finance app logo mark, minimalist, warm neutral palette (cc-spend-logo.dim_512x512.png)\n- Flat illustration of a budget dashboard with charts and receipt elements, warm neutral palette (spend-dashboard-illustration.dim_1600x900.png)",
+  "existing_features": [
+    {
+      "id": "feature-implement-internet-identity-sign-in-and-ensure-all-user-data-transactions-categories-reward-profiles-is-scoped-per-authenticated-user",
+      "title": "Implement Internet Identity sign-in and ensure all user data (transactions, categories, reward profiles) is scoped per authenticated user.",
+      "reqIds": [
+        "REQ-1"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-build-a-frontend-transactions-workflow-manual-entry-form-editable-table-including-category-selection-and-search-filter-by-date-range-merchant-category-and-card-label",
+      "title": "Build a frontend Transactions workflow: manual entry form + editable table, including category selection and search/filter by date range, merchant, category, and card label.",
+      "reqIds": [
+        "REQ-3"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-csv-import-for-transactions-on-the-frontend-client-side-parsing-with-a-mapping-step-to-assign-columns-date-merchant-description-amount-category-if-present-then-persist-imported-transactions-to-the-backend",
+      "title": "Add CSV import for transactions on the frontend (client-side parsing), with a mapping step to assign columns (date, merchant/description, amount, category if present), then persist imported transactions to the backend.",
+      "reqIds": [
+        "REQ-4"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-implement-spending-analytics-views-totals-over-time-monthly-category-breakdown-and-top-merchants-include-basic-insights-such-as-biggest-category-month-over-month-change-and-average-monthly-spend-for-the-selected-range",
+      "title": "Implement spending analytics views: totals over time (monthly), category breakdown, and top merchants; include basic insights such as biggest category, month-over-month change, and average monthly spend for the selected range.",
+      "reqIds": [
+        "REQ-5"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-create-a-reward-points-module-that-lets-a-user-define-reward-point-balances-and-redemption-options-e-g-statement-credit-travel-portal-transfer-to-partners-gift-cards-including-required-fields-to-compute-value-points-required-cash-value-fees-surcharges-restrictions-notes",
+      "title": "Create a Reward Points module that lets a user define reward point balances and redemption options (e.g., statement credit, travel portal, transfer to partners, gift cards) including required fields to compute value (points required, cash value, fees/surcharges, restrictions notes).",
+      "reqIds": [
+        "REQ-6"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-provide-redemption-guidance-and-recommendations-rank-redemption-options-by-effective-value-cpp-and-show-a-plain-english-explanation-of-why-an-option-is-recommended-including-a-warning-when-an-option-has-low-value-or-hidden-costs-fees-surcharges",
+      "title": "Provide redemption guidance and recommendations: rank redemption options by effective value (CPP) and show a plain-English explanation of why an option is recommended, including a warning when an option has low value or hidden costs (fees, surcharges).",
+      "reqIds": [
+        "REQ-7"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-connect-spending-analytics-to-reward-strategy-by-allowing-users-to-set-category-to-reward-assumptions-e-g-3x-points-on-dining-and-show-an-estimated-points-earned-summary-over-the-selected-date-range",
+      "title": "Connect spending analytics to reward strategy by allowing users to set category-to-reward assumptions (e.g., 3x points on dining) and show an estimated points-earned summary over the selected date range.",
+      "reqIds": [
+        "REQ-8"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-an-onboarding-help-section-that-explains-how-to-use-the-app-and-includes-disclaimers-that-guidance-is-educational-based-on-user-entered-data-and-not-financial-advice",
+      "title": "Add an onboarding/help section that explains how to use the app and includes disclaimers that guidance is educational, based on user-entered data, and not financial advice.",
+      "reqIds": [
+        "REQ-9"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-apply-a-coherent-visual-theme-across-the-app-colors-typography-spacing-and-component-styling-suitable-for-a-personal-finance-tool-with-a-distinct-style-avoid-default-template-look-and-consistent-layout-for-dashboard-transactions-and-rewards-screens",
+      "title": "Apply a coherent visual theme across the app (colors, typography, spacing, and component styling) suitable for a personal finance tool, with a distinct style (avoid default template look) and consistent layout for Dashboard, Transactions, and Rewards screens.",
+      "reqIds": [
+        "REQ-10"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-generated-static-image-assets-logo-simple-dashboard-illustration-to-the-frontend-and-display-them-in-the-app-shell-logo-in-header-login-and-on-the-landing-empty-state-screens",
+      "title": "Add generated static image assets (logo + simple dashboard illustration) to the frontend and display them in the app shell (logo in header/login) and on the landing/empty-state screens.",
+      "reqIds": [
+        "REQ-11"
+      ],
+      "version": 1
+    }
+  ],
+  "new_feature_requests": [
+    {
+      "id": "AR-1",
+      "summary": "Credit card spend analyzer (categorize and analyze spending patterns)",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-2",
+      "summary": "Reward points redemption guidance (recommend correct/optimal redemption options)",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-4",
+      "summary": "Create a Transactions data model and CRUD API in the Motoko backend to store credit card spend records per user (date, merchant, amount, currency, category, card label, notes, raw description).",
+      "reqIds": [
+        "REQ-2"
+      ],
+      "status": "pending"
+    }
+  ],
+  "gameProjectType": "none",
+  "projectName": "Credit Card Spend Analyzer + Reward Points Redemption Advisor",
+  "clarification_mode": "instant",
+  "clarification_rounds": 0
+}

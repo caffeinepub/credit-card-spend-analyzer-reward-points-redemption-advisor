@@ -1,0 +1,363 @@
+{
+  "kind": "coverage_report",
+  "version": "1.0",
+  "generatedAt": "2026-02-10T14:15:33.080Z",
+  "sources": {
+    "buildRequest": true,
+    "implementationPlan": true
+  },
+  "requirements": {
+    "total": 11,
+    "implemented": 10,
+    "items": [
+      {
+        "id": "REQ-1",
+        "summary": "Implement Internet Identity sign-in and ensure all user data (transactions, categories, reward profiles) is scoped per authenticated user.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/App.tsx",
+          "frontend/src/components/auth/AuthGate.tsx",
+          "frontend/src/components/auth/LoginButton.tsx",
+          "frontend/src/hooks/useCurrentUserProfile.ts",
+          "frontend/src/components/auth/ProfileSetupModal.tsx",
+          "frontend/src/components/layout/AppShell.tsx",
+          "frontend/src/pages/LandingPage.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/App.tsx",
+          "frontend/src/components/auth/AuthGate.tsx",
+          "frontend/src/components/auth/LoginButton.tsx",
+          "frontend/src/hooks/useCurrentUserProfile.ts",
+          "frontend/src/components/auth/ProfileSetupModal.tsx",
+          "frontend/src/components/layout/AppShell.tsx",
+          "frontend/src/pages/LandingPage.tsx"
+        ]
+      },
+      {
+        "id": "REQ-10",
+        "summary": "Apply a coherent visual theme across the app (colors, typography, spacing, and component styling) suitable for a personal finance tool, with a distinct style (avoid default template look) and consistent layout for Dashboard, Transactions, and Rewards screens.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/index.css",
+          "frontend/tailwind.config.js",
+          "frontend/src/components/layout/AppShell.tsx",
+          "frontend/src/pages/DashboardPage.tsx",
+          "frontend/src/pages/TransactionsPage.tsx",
+          "frontend/src/pages/RewardsPage.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/index.css",
+          "frontend/tailwind.config.js",
+          "frontend/src/components/layout/AppShell.tsx",
+          "frontend/src/pages/DashboardPage.tsx",
+          "frontend/src/pages/TransactionsPage.tsx",
+          "frontend/src/pages/RewardsPage.tsx"
+        ]
+      },
+      {
+        "id": "REQ-11",
+        "summary": "Add generated static image assets (logo + simple dashboard illustration) to the frontend and display them in the app shell (logo in header/login) and on the landing/empty-state screens.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/public/assets/generated/cc-spend-logo.dim_512x512.png",
+          "frontend/public/assets/generated/spend-dashboard-illustration.dim_1600x900.png",
+          "frontend/src/pages/LandingPage.tsx",
+          "frontend/src/components/layout/AppShell.tsx",
+          "frontend/src/pages/DashboardPage.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/public/assets/generated/cc-spend-logo.dim_512x512.png",
+          "frontend/public/assets/generated/spend-dashboard-illustration.dim_1600x900.png",
+          "frontend/src/pages/LandingPage.tsx",
+          "frontend/src/components/layout/AppShell.tsx",
+          "frontend/src/pages/DashboardPage.tsx"
+        ]
+      },
+      {
+        "id": "REQ-2",
+        "summary": "Create a Transactions data model and CRUD API in the Motoko backend to store credit card spend records per user (date, merchant, amount, currency, category, card label, notes, raw description).",
+        "status": "unknown",
+        "plannedFiles": [],
+        "matchedFiles": []
+      },
+      {
+        "id": "REQ-3",
+        "summary": "Build a frontend Transactions workflow: manual entry form + editable table, including category selection and search/filter by date range, merchant, category, and card label.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/types/transactions.ts",
+          "frontend/src/hooks/useTransactions.ts",
+          "frontend/src/pages/TransactionsPage.tsx",
+          "frontend/src/components/transactions/TransactionForm.tsx",
+          "frontend/src/components/transactions/TransactionsTable.tsx",
+          "frontend/src/components/transactions/TransactionFilters.tsx",
+          "frontend/src/App.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/types/transactions.ts",
+          "frontend/src/hooks/useTransactions.ts",
+          "frontend/src/pages/TransactionsPage.tsx",
+          "frontend/src/components/transactions/TransactionForm.tsx",
+          "frontend/src/components/transactions/TransactionsTable.tsx",
+          "frontend/src/components/transactions/TransactionFilters.tsx",
+          "frontend/src/App.tsx"
+        ]
+      },
+      {
+        "id": "REQ-4",
+        "summary": "Add CSV import for transactions on the frontend (client-side parsing), with a mapping step to assign columns (date, merchant/description, amount, category if present), then persist imported transactions to the backend.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/utils/csv.ts",
+          "frontend/src/components/transactions/CsvImportWizard.tsx",
+          "frontend/src/pages/TransactionsPage.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/utils/csv.ts",
+          "frontend/src/components/transactions/CsvImportWizard.tsx",
+          "frontend/src/pages/TransactionsPage.tsx"
+        ]
+      },
+      {
+        "id": "REQ-5",
+        "summary": "Implement spending analytics views: totals over time (monthly), category breakdown, and top merchants; include basic insights such as biggest category, month-over-month change, and average monthly spend for the selected range.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/utils/analytics.ts",
+          "frontend/src/components/dashboard/DateRangePicker.tsx",
+          "frontend/src/components/dashboard/MonthlyTotalsChart.tsx",
+          "frontend/src/components/dashboard/CategoryBreakdownChart.tsx",
+          "frontend/src/components/dashboard/TopMerchantsList.tsx",
+          "frontend/src/pages/DashboardPage.tsx",
+          "frontend/src/App.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/utils/analytics.ts",
+          "frontend/src/components/dashboard/DateRangePicker.tsx",
+          "frontend/src/components/dashboard/MonthlyTotalsChart.tsx",
+          "frontend/src/components/dashboard/CategoryBreakdownChart.tsx",
+          "frontend/src/components/dashboard/TopMerchantsList.tsx",
+          "frontend/src/pages/DashboardPage.tsx",
+          "frontend/src/App.tsx"
+        ]
+      },
+      {
+        "id": "REQ-6",
+        "summary": "Create a Reward Points module that lets a user define reward point balances and redemption options (e.g., statement credit, travel portal, transfer to partners, gift cards) including required fields to compute value (points required, cash value, fees/surcharges, restrictions notes).",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/types/rewards.ts",
+          "frontend/src/utils/rewardsMath.ts",
+          "frontend/src/hooks/useRewardProfiles.ts",
+          "frontend/src/components/rewards/RewardProfileForm.tsx",
+          "frontend/src/components/rewards/RedemptionOptionForm.tsx",
+          "frontend/src/components/rewards/RewardProfilesList.tsx",
+          "frontend/src/pages/RewardsPage.tsx",
+          "frontend/src/App.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/types/rewards.ts",
+          "frontend/src/utils/rewardsMath.ts",
+          "frontend/src/hooks/useRewardProfiles.ts",
+          "frontend/src/components/rewards/RewardProfileForm.tsx",
+          "frontend/src/components/rewards/RedemptionOptionForm.tsx",
+          "frontend/src/components/rewards/RewardProfilesList.tsx",
+          "frontend/src/pages/RewardsPage.tsx",
+          "frontend/src/App.tsx"
+        ]
+      },
+      {
+        "id": "REQ-7",
+        "summary": "Provide redemption guidance and recommendations: rank redemption options by effective value (CPP) and show a plain-English explanation of why an option is recommended, including a warning when an option has low value or hidden costs (fees, surcharges).",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/utils/recommendations.ts",
+          "frontend/src/hooks/useRewardAdvisorySettings.ts",
+          "frontend/src/components/rewards/RedemptionRecommendations.tsx",
+          "frontend/src/pages/RewardsPage.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/utils/recommendations.ts",
+          "frontend/src/hooks/useRewardAdvisorySettings.ts",
+          "frontend/src/components/rewards/RedemptionRecommendations.tsx",
+          "frontend/src/pages/RewardsPage.tsx"
+        ]
+      },
+      {
+        "id": "REQ-8",
+        "summary": "Connect spending analytics to reward strategy by allowing users to set category-to-reward assumptions (e.g., 3x points on dining) and show an estimated points-earned summary over the selected date range.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/types/earningRates.ts",
+          "frontend/src/hooks/useEarningRates.ts",
+          "frontend/src/utils/pointsEstimate.ts",
+          "frontend/src/components/dashboard/PointsEstimateSummary.tsx",
+          "frontend/src/components/settings/EarningRatesEditor.tsx",
+          "frontend/src/pages/DashboardPage.tsx",
+          "frontend/src/pages/RewardsPage.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/types/earningRates.ts",
+          "frontend/src/hooks/useEarningRates.ts",
+          "frontend/src/utils/pointsEstimate.ts",
+          "frontend/src/components/dashboard/PointsEstimateSummary.tsx",
+          "frontend/src/components/settings/EarningRatesEditor.tsx",
+          "frontend/src/pages/DashboardPage.tsx",
+          "frontend/src/pages/RewardsPage.tsx"
+        ]
+      },
+      {
+        "id": "REQ-9",
+        "summary": "Add an onboarding/help section that explains how to use the app and includes disclaimers that guidance is educational, based on user-entered data, and not financial advice.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/pages/HelpPage.tsx",
+          "frontend/src/App.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/pages/HelpPage.tsx",
+          "frontend/src/App.tsx"
+        ]
+      }
+    ]
+  },
+  "changedFiles": [
+    "backend/authorization/MixinAuthorization.mo",
+    "backend/authorization/access-control.mo",
+    "backend/main.mo",
+    "build-request.json",
+    "build-template/Dockerfile",
+    "build-template/LICENSE",
+    "build-template/README.md",
+    "build-template/deploy.sh",
+    "build-template/icp.yaml",
+    "build-template/package.json",
+    "build-template/pnpm-lock.yaml",
+    "build-template/pnpm-workspace.yaml",
+    "build-template/scripts/prune-unused-images.js",
+    "build-template/scripts/resize-images.js",
+    "build-template/src/backend/canister.yaml",
+    "build-template/src/backend/system-idl/aaaaa-aa.did",
+    "build-template/src/frontend/canister.yaml",
+    "build-template/src/frontend/components.json",
+    "build-template/src/frontend/env.json",
+    "build-template/src/frontend/eslint-rules/no-bigint-in-query-keys.js",
+    "build-template/src/frontend/eslint-rules/require-internet-identity-provider.js",
+    "build-template/src/frontend/eslint.config.js",
+    "build-template/src/frontend/package.json",
+    "build-template/src/frontend/postcss.config.js",
+    "build-template/src/frontend/src/components/ui/accordion.tsx",
+    "build-template/src/frontend/src/components/ui/alert-dialog.tsx",
+    "build-template/src/frontend/src/components/ui/alert.tsx",
+    "build-template/src/frontend/src/components/ui/aspect-ratio.tsx",
+    "build-template/src/frontend/src/components/ui/avatar.tsx",
+    "build-template/src/frontend/src/components/ui/badge.tsx",
+    "build-template/src/frontend/src/components/ui/breadcrumb.tsx",
+    "build-template/src/frontend/src/components/ui/button.tsx",
+    "build-template/src/frontend/src/components/ui/calendar.tsx",
+    "build-template/src/frontend/src/components/ui/card.tsx",
+    "build-template/src/frontend/src/components/ui/carousel.tsx",
+    "build-template/src/frontend/src/components/ui/chart.tsx",
+    "build-template/src/frontend/src/components/ui/checkbox.tsx",
+    "build-template/src/frontend/src/components/ui/collapsible.tsx",
+    "build-template/src/frontend/src/components/ui/command.tsx",
+    "build-template/src/frontend/src/components/ui/context-menu.tsx",
+    "build-template/src/frontend/src/components/ui/dialog.tsx",
+    "build-template/src/frontend/src/components/ui/drawer.tsx",
+    "build-template/src/frontend/src/components/ui/dropdown-menu.tsx",
+    "build-template/src/frontend/src/components/ui/form.tsx",
+    "build-template/src/frontend/src/components/ui/hover-card.tsx",
+    "build-template/src/frontend/src/components/ui/input-otp.tsx",
+    "build-template/src/frontend/src/components/ui/input.tsx",
+    "build-template/src/frontend/src/components/ui/label.tsx",
+    "build-template/src/frontend/src/components/ui/menubar.tsx",
+    "build-template/src/frontend/src/components/ui/navigation-menu.tsx",
+    "build-template/src/frontend/src/components/ui/pagination.tsx",
+    "build-template/src/frontend/src/components/ui/popover.tsx",
+    "build-template/src/frontend/src/components/ui/progress.tsx",
+    "build-template/src/frontend/src/components/ui/radio-group.tsx",
+    "build-template/src/frontend/src/components/ui/resizable.tsx",
+    "build-template/src/frontend/src/components/ui/scroll-area.tsx",
+    "build-template/src/frontend/src/components/ui/select.tsx",
+    "build-template/src/frontend/src/components/ui/separator.tsx",
+    "build-template/src/frontend/src/components/ui/sheet.tsx",
+    "build-template/src/frontend/src/components/ui/sidebar.tsx",
+    "build-template/src/frontend/src/components/ui/skeleton.tsx",
+    "build-template/src/frontend/src/components/ui/slider.tsx",
+    "build-template/src/frontend/src/components/ui/sonner.tsx",
+    "build-template/src/frontend/src/components/ui/switch.tsx",
+    "build-template/src/frontend/src/components/ui/table.tsx",
+    "build-template/src/frontend/src/components/ui/tabs.tsx",
+    "build-template/src/frontend/src/components/ui/textarea.tsx",
+    "build-template/src/frontend/src/components/ui/toggle-group.tsx",
+    "build-template/src/frontend/src/components/ui/toggle.tsx",
+    "build-template/src/frontend/src/components/ui/tooltip.tsx",
+    "build-template/src/frontend/src/hooks/use-mobile.tsx",
+    "build-template/src/frontend/src/lib/utils.ts",
+    "build-template/src/frontend/tsconfig.json",
+    "build-template/src/frontend/vite.config.js",
+    "build-template/tsconfig.json",
+    "caffeine.lock.json",
+    "feature_evidence.json",
+    "frontend-file-summaries.txt",
+    "frontend-implementation-plan.json",
+    "frontend/index.css",
+    "frontend/index.html",
+    "frontend/public/assets/generated/cc-spend-logo.dim_512x512.png",
+    "frontend/public/assets/generated/spend-dashboard-illustration.dim_1600x900.png",
+    "frontend/src/App.tsx",
+    "frontend/src/backend.d.ts",
+    "frontend/src/backend.ts",
+    "frontend/src/components/auth/AuthGate.tsx",
+    "frontend/src/components/auth/LoginButton.tsx",
+    "frontend/src/components/auth/ProfileSetupModal.tsx",
+    "frontend/src/components/dashboard/CategoryBreakdownChart.tsx",
+    "frontend/src/components/dashboard/DateRangePicker.tsx",
+    "frontend/src/components/dashboard/MonthlyTotalsChart.tsx",
+    "frontend/src/components/dashboard/PointsEstimateSummary.tsx",
+    "frontend/src/components/dashboard/TopMerchantsList.tsx",
+    "frontend/src/components/layout/AppShell.tsx",
+    "frontend/src/components/rewards/RedemptionOptionForm.tsx",
+    "frontend/src/components/rewards/RedemptionRecommendations.tsx",
+    "frontend/src/components/rewards/RewardProfileForm.tsx",
+    "frontend/src/components/rewards/RewardProfilesList.tsx",
+    "frontend/src/components/settings/EarningRatesEditor.tsx",
+    "frontend/src/components/transactions/CsvImportWizard.tsx",
+    "frontend/src/components/transactions/TransactionFilters.tsx",
+    "frontend/src/components/transactions/TransactionForm.tsx",
+    "frontend/src/components/transactions/TransactionsTable.tsx",
+    "frontend/src/config.ts",
+    "frontend/src/declarations/backend.did.d.ts",
+    "frontend/src/declarations/backend.did.js",
+    "frontend/src/hooks/useActor.ts",
+    "frontend/src/hooks/useCurrentUserProfile.ts",
+    "frontend/src/hooks/useEarningRates.ts",
+    "frontend/src/hooks/useInternetIdentity.ts",
+    "frontend/src/hooks/useRewardAdvisorySettings.ts",
+    "frontend/src/hooks/useRewardProfiles.ts",
+    "frontend/src/hooks/useTransactions.ts",
+    "frontend/src/index.css",
+    "frontend/src/main.tsx",
+    "frontend/src/pages/DashboardPage.tsx",
+    "frontend/src/pages/HelpPage.tsx",
+    "frontend/src/pages/LandingPage.tsx",
+    "frontend/src/pages/RewardsPage.tsx",
+    "frontend/src/pages/TransactionsPage.tsx",
+    "frontend/src/types/earningRates.ts",
+    "frontend/src/types/rewards.ts",
+    "frontend/src/types/transactions.ts",
+    "frontend/src/ui-summary.json",
+    "frontend/src/utils/StorageClient.ts",
+    "frontend/src/utils/analytics.ts",
+    "frontend/src/utils/csv.ts",
+    "frontend/src/utils/pointsEstimate.ts",
+    "frontend/src/utils/recommendations.ts",
+    "frontend/src/utils/rewardsMath.ts",
+    "frontend/src/utils/urlParams.ts",
+    "frontend/tailwind.config.js",
+    "project_state.json",
+    "scratch/component-selection.json",
+    "spec.md",
+    "spec_vs_diff_report.json"
+  ]
+}
