@@ -1,11 +1,10 @@
 {
   "schemaVersion": "1.0.0",
-  "projectStateVersion": 3,
+  "projectStateVersion": 5,
   "summary": "Build an app to analyze credit card spending and provide guidance on the correct/optimal way to redeem reward points.",
   "architectural_notes": [],
   "known_issues": [],
   "isFixRequest": false,
-  "imageRequirements": "## Required Images\n- Personal finance app logo mark, minimalist, warm neutral palette (cc-spend-logo.dim_512x512.png)\n- Flat illustration of a budget dashboard with charts and receipt elements, warm neutral palette (spend-dashboard-illustration.dim_1600x900.png)",
   "existing_features": [
     {
       "id": "feature-implement-internet-identity-sign-in-and-ensure-all-user-data-transactions-categories-reward-profiles-is-scoped-per-authenticated-user",
@@ -86,6 +85,14 @@
         "REQ-11"
       ],
       "version": 1
+    },
+    {
+      "id": "feature-replace-the-frontend-localstorage-based-transactions-implementation-with-backend-persisted-transactions-using-the-authenticated-actor-while-keeping-the-existing-transactions-ui-ux-add-edit-delete-filters-table-dialogs-working-end-to-end",
+      "title": "Replace the frontend localStorage-based transactions implementation with backend-persisted transactions using the authenticated actor, while keeping the existing Transactions UI/UX (add/edit/delete, filters, table, dialogs) working end-to-end.",
+      "reqIds": [
+        "REQ-13"
+      ],
+      "version": 1
     }
   ],
   "new_feature_requests": [
@@ -106,6 +113,22 @@
       "summary": "Create a Transactions data model and CRUD API in the Motoko backend to store credit card spend records per user (date, merchant, amount, currency, category, card label, notes, raw description).",
       "reqIds": [
         "REQ-2"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-5",
+      "summary": "Implement a per-authenticated-user Transactions data model and CRUD API in the Motoko backend to persist credit card spend records (date, merchant, amount, currency, category, card label, notes, raw description) and support bulk insert for CSV imports.",
+      "reqIds": [
+        "REQ-12"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-7",
+      "summary": "Ensure all spending analytics and reward points estimate calculations use the backend-persisted transactions dataset (not localStorage), so Dashboard analytics reflect the same transactions shown on the Transactions page.",
+      "reqIds": [
+        "REQ-14"
       ],
       "status": "pending"
     }

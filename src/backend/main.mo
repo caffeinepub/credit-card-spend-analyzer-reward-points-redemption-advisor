@@ -2,8 +2,10 @@ import Array "mo:core/Array";
 import Map "mo:core/Map";
 import Text "mo:core/Text";
 import List "mo:core/List";
+import Nat "mo:core/Nat";
 import Principal "mo:core/Principal";
 import Runtime "mo:core/Runtime";
+import Iter "mo:core/Iter";
 import MixinAuthorization "authorization/MixinAuthorization";
 import AccessControl "authorization/access-control";
 
@@ -47,8 +49,22 @@ actor {
     name : Text;
   };
 
+  type Transaction = {
+    id : Nat;
+    date : Text;
+    merchant : Text;
+    amount : Float;
+    currency : Currency;
+    category : Text;
+    cardLabel : Text;
+    notes : Text;
+    rawDescription : Text;
+  };
+
   let userProfiles = Map.empty<Principal, UserProfile>();
   let rewardProfiles = Map.empty<Principal, [RewardPoints]>();
+  let transactionsByUser = Map.empty<Principal, List.List<Transaction>>();
+  var nextTransactionId = 0;
   var nextRewardId = 0;
   var nextOptionId = 0;
 
@@ -141,5 +157,104 @@ actor {
       case (null) { [] };
       case (?result) { result };
     };
+  };
+
+  // Transactions CRUD
+  public shared ({ caller }) func createTransaction(date : Text, merchant : Text, amount : Float, currency : Currency, category : Text, cardLabel : Text, notes : Text, rawDescription : Text) : async Nat {
+    if (not (AccessControl.hasPermission(accessControlState, caller, #user))) {
+      Runtime.trap("Unauthorized: Only users can create transactions");
+    };
+
+    let transactionId = nextTransactionId;
+    nextTransactionId += 1;
+
+    let newTransaction : Transaction = {
+      id = transactionId;
+      date;
+      merchant;
+      amount;
+      currency;
+      category;
+      cardLabel;
+      notes;
+      rawDescription;
+    };
+
+    let userTransactions = switch (transactionsByUser.get(caller)) {
+      case (null) { List.empty<Transaction>() };
+      case (?transactions) { transactions };
+    };
+
+    userTransactions.add(newTransaction);
+    transactionsByUser.add(caller, userTransactions);
+    transactionId;
+  };
+
+  public query ({ caller }) func getTransactions() : async [Transaction] {
+    if (not (AccessControl.hasPermission(accessControlState, caller, #user))) {
+      Runtime.trap("Unauthorized: Only users can view transactions");
+    };
+    let transactions = switch (transactionsByUser.get(caller)) {
+      case (null) { List.empty<Transaction>() };
+      case (?t) { t };
+    };
+    transactions.toArray();
+  };
+
+  public shared ({ caller }) func updateTransaction(id : Nat, updatedTransaction : Transaction) : async () {
+    if (not (AccessControl.hasPermission(accessControlState, caller, #user))) {
+      Runtime.trap("Unauthorized: Only users can update transactions");
+    };
+
+    let userTransactions = switch (transactionsByUser.get(caller)) {
+      case (null) { List.empty<Transaction>() };
+      case (?transactions) { transactions };
+    };
+
+    let updatedList = userTransactions.map<Transaction, Transaction>(
+      func(tr) {
+        if (tr.id == id) {
+          updatedTransaction;
+        } else {
+          tr;
+        };
+      }
+    );
+
+    transactionsByUser.add(caller, updatedList);
+  };
+
+  public shared ({ caller }) func deleteTransaction(id : Nat) : async () {
+    if (not (AccessControl.hasPermission(accessControlState, caller, #user))) {
+      Runtime.trap("Unauthorized: Only users can delete transactions");
+    };
+
+    let userTransactions = switch (transactionsByUser.get(caller)) {
+      case (null) { List.empty<Transaction>() };
+      case (?transactions) { transactions };
+    };
+
+    let filteredList = userTransactions.filter(
+      func(transaction) {
+        transaction.id != id;
+      }
+    );
+
+    transactionsByUser.add(caller, filteredList);
+  };
+
+  public shared ({ caller }) func bulkImportTransactions(transactions : [Transaction]) : async () {
+    if (not (AccessControl.hasPermission(accessControlState, caller, #user))) {
+      Runtime.trap("Unauthorized: Only users can import transactions");
+    };
+
+    let userTransactions = switch (transactionsByUser.get(caller)) {
+      case (null) { List.empty<Transaction>() };
+      case (?transactions) { transactions };
+    };
+
+    let transactionsList = List.fromArray<Transaction>(transactions);
+    userTransactions.addAll(transactionsList.values());
+    transactionsByUser.add(caller, userTransactions);
   };
 };

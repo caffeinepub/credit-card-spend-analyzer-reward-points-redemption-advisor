@@ -1,233 +1,79 @@
 {
   "kind": "build_request",
-  "title": "Credit Card Spend Analyzer + Reward Points Redemption Advisor",
+  "title": "Add Motoko-backed Transactions storage and connect frontend transactions workflow to backend",
   "priority": "normal",
   "requirements": [
     {
-      "id": "REQ-1",
-      "text": "Implement Internet Identity sign-in and ensure all user data (transactions, categories, reward profiles) is scoped per authenticated user.",
-      "target": "both",
-      "source": {
-        "messageIds": [
-          "recent-messages-2"
-        ],
-        "quotes": [
-          "Credit card spend analyser and correct way to redeem reward points"
-        ]
-      },
-      "acceptanceCriteria": [
-        "Unauthenticated users can view a marketing/intro screen but cannot create/view saved data.",
-        "Authenticated users only see their own transactions and reward data.",
-        "Signing out and signing in with a different identity shows a separate dataset."
-      ]
-    },
-    {
-      "id": "REQ-2",
-      "text": "Create a Transactions data model and CRUD API in the Motoko backend to store credit card spend records per user (date, merchant, amount, currency, category, card label, notes, raw description).",
+      "id": "REQ-12",
+      "text": "Implement a per-authenticated-user Transactions data model and CRUD API in the Motoko backend to persist credit card spend records (date, merchant, amount, currency, category, card label, notes, raw description) and support bulk insert for CSV imports.",
       "target": "backend",
       "source": {
         "messageIds": [
-          "recent-messages-2"
+          "msg-1"
         ],
         "quotes": [
-          "Credit card spend analyser"
+          "Create app"
         ]
       },
       "acceptanceCriteria": [
-        "Backend exposes methods to create, list (with basic filtering by date range), update, and delete transactions.",
-        "Transactions are persisted across page reloads and canister upgrades (stable storage).",
-        "All methods enforce per-user isolation."
+        "Backend defines a Transaction record type that includes: id, date, merchant, amount, currency, category, cardLabel, notes, rawDescription.",
+        "Backend stores transactions keyed by caller Principal so each authenticated user can only access their own data.",
+        "Backend exposes update methods to: create a transaction, update a transaction, delete a transaction, list all transactions for the caller, and bulk-create transactions (for CSV import).",
+        "All transaction methods enforce the same access-control checks used by existing profile/reward methods (trap/deny when caller lacks #user permission).",
+        "Transaction IDs are generated server-side and are stable/unique within a user’s transaction set.",
+        "Listing transactions returns an empty list when the user has no data (no traps for empty state)."
       ]
     },
     {
-      "id": "REQ-3",
-      "text": "Build a frontend Transactions workflow: manual entry form + editable table, including category selection and search/filter by date range, merchant, category, and card label.",
+      "id": "REQ-13",
+      "text": "Replace the frontend localStorage-based transactions implementation with backend-persisted transactions using the authenticated actor, while keeping the existing Transactions UI/UX (add/edit/delete, filters, table, dialogs) working end-to-end.",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "recent-messages-2"
+          "msg-1"
         ],
         "quotes": [
-          "Credit card spend analyser"
+          "Create app"
         ]
       },
       "acceptanceCriteria": [
-        "User can add a transaction from a form and see it immediately in the table.",
-        "User can edit and delete transactions from the table.",
-        "Filters update the visible list without a full page refresh."
+        "The React Query hooks in frontend/src/hooks/useTransactions.ts fetch and mutate transactions via the backend actor instead of using localStorage.",
+        "Add, edit, and delete actions in the Transactions page update backend data and automatically refresh the table using React Query invalidation.",
+        "The CSV import wizard imports transactions by calling the backend bulk-create endpoint through the updated hook and shows the same success/error toast behavior.",
+        "When the user logs out and logs back in with a different Internet Identity, transactions displayed are scoped to the currently authenticated user (no cross-user leakage)."
       ]
     },
     {
-      "id": "REQ-4",
-      "text": "Add CSV import for transactions on the frontend (client-side parsing), with a mapping step to assign columns (date, merchant/description, amount, category if present), then persist imported transactions to the backend.",
-      "target": "both",
-      "source": {
-        "messageIds": [
-          "recent-messages-2"
-        ],
-        "quotes": [
-          "Credit card spend analyser"
-        ]
-      },
-      "acceptanceCriteria": [
-        "User can upload a CSV file and preview parsed rows before saving.",
-        "User can map CSV columns to required fields (at minimum: date, merchant/description, amount).",
-        "Imported rows are saved as transactions and appear in analytics."
-      ]
-    },
-    {
-      "id": "REQ-5",
-      "text": "Implement spending analytics views: totals over time (monthly), category breakdown, and top merchants; include basic insights such as biggest category, month-over-month change, and average monthly spend for the selected range.",
+      "id": "REQ-14",
+      "text": "Ensure all spending analytics and reward points estimate calculations use the backend-persisted transactions dataset (not localStorage), so Dashboard analytics reflect the same transactions shown on the Transactions page.",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "recent-messages-2"
+          "msg-1"
         ],
         "quotes": [
-          "Credit card spend analyser"
+          "Create app"
         ]
       },
       "acceptanceCriteria": [
-        "Dashboard shows at least: total spend in range, monthly totals chart, category breakdown chart, top merchants list.",
-        "User can change the date range and all metrics/charts update accordingly.",
-        "Insights are computed deterministically from stored transactions (no external APIs)."
-      ]
-    },
-    {
-      "id": "REQ-6",
-      "text": "Create a Reward Points module that lets a user define reward point balances and redemption options (e.g., statement credit, travel portal, transfer to partners, gift cards) including required fields to compute value (points required, cash value, fees/surcharges, restrictions notes).",
-      "target": "both",
-      "source": {
-        "messageIds": [
-          "recent-messages-2"
-        ],
-        "quotes": [
-          "correct way to redeem reward points"
-        ]
-      },
-      "acceptanceCriteria": [
-        "User can add/edit/delete a reward program profile and multiple redemption options under it.",
-        "App calculates cents-per-point (CPP) for each option using user-provided numbers and displays it clearly.",
-        "Reward program data is persisted per user."
-      ]
-    },
-    {
-      "id": "REQ-7",
-      "text": "Provide redemption guidance and recommendations: rank redemption options by effective value (CPP) and show a plain-English explanation of why an option is recommended, including a warning when an option has low value or hidden costs (fees, surcharges).",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "recent-messages-2"
-        ],
-        "quotes": [
-          "correct way to redeem reward points"
-        ]
-      },
-      "acceptanceCriteria": [
-        "Options are sortable and a default 'Best value' ranking is shown.",
-        "Each option displays: effective CPP, net value after fees, and a short explanation in English.",
-        "Low-value options are clearly flagged based on a defined threshold configurable in the UI (e.g., user can set 'flag below X CPP')."
-      ]
-    },
-    {
-      "id": "REQ-8",
-      "text": "Connect spending analytics to reward strategy by allowing users to set category-to-reward assumptions (e.g., 3x points on dining) and show an estimated points-earned summary over the selected date range.",
-      "target": "both",
-      "source": {
-        "messageIds": [
-          "recent-messages-2"
-        ],
-        "quotes": [
-          "Credit card spend analyser and correct way to redeem reward points"
-        ]
-      },
-      "acceptanceCriteria": [
-        "User can define earning rates by category (and optionally by card label).",
-        "App shows estimated points earned by category and total points for the selected range.",
-        "Estimates are clearly labeled as estimates and are based solely on user-defined rates and stored spend."
-      ]
-    },
-    {
-      "id": "REQ-9",
-      "text": "Add an onboarding/help section that explains how to use the app and includes disclaimers that guidance is educational, based on user-entered data, and not financial advice.",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "recent-messages-2"
-        ],
-        "quotes": [
-          "correct way to redeem reward points"
-        ]
-      },
-      "acceptanceCriteria": [
-        "Help page/section is accessible from the main navigation.",
-        "Text is in English and includes a clear disclaimer.",
-        "Explains CSV import expectations and how CPP is calculated."
-      ]
-    },
-    {
-      "id": "REQ-10",
-      "text": "Apply a coherent visual theme across the app (colors, typography, spacing, and component styling) suitable for a personal finance tool, with a distinct style (avoid default template look) and consistent layout for Dashboard, Transactions, and Rewards screens.",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "recent-messages-2"
-        ],
-        "quotes": [
-          "Credit card spend analyser and correct way to redeem reward points"
-        ]
-      },
-      "acceptanceCriteria": [
-        "All primary screens share consistent header/nav, typography scale, and spacing rules.",
-        "Theme is applied consistently to cards, tables, forms, and charts.",
-        "Theme does not rely on blue/purple as the primary palette."
-      ]
-    },
-    {
-      "id": "REQ-11",
-      "text": "Add generated static image assets (logo + simple dashboard illustration) to the frontend and display them in the app shell (logo in header/login) and on the landing/empty-state screens.",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "recent-messages-2"
-        ],
-        "quotes": [
-          "Credit card spend analyser and correct way to redeem reward points"
-        ]
-      },
-      "acceptanceCriteria": [
-        "Generated images are stored under frontend/public/assets/generated and referenced directly by the frontend.",
-        "Logo is visible on the sign-in/landing area and in the authenticated app header.",
-        "Illustration appears on at least one empty state (e.g., no transactions yet)."
+        "Dashboard charts/insights and the points estimate summary use the same transactions query source as the Transactions page after the backend migration of hooks.",
+        "After importing or adding a transaction, navigating to the Dashboard reflects updated analytics without requiring a manual refresh.",
+        "Empty-state behavior remains correct on Dashboard when the backend returns no transactions."
       ]
     }
   ],
   "constraints": [
-    "Backend must remain a single Motoko actor in backend/main.mo; do not introduce additional backend services.",
-    "Do not edit files in frontend immutable paths (frontend/src/hooks/useInternetIdentity.ts, frontend/src/hooks/useInternetIdentity.tsx, frontend/src/hooks/useActor.ts, frontend/src/main.tsx, frontend/src/components/ui); compose or wrap them instead.",
-    "No external databases or third-party APIs for bank transaction syncing; all data is user-entered/imported.",
+    "Respect the single-actor backend architecture: implement all Motoko transaction logic in backend/main.mo.",
+    "Do not modify any frontend paths listed as immutable: frontend/src/hooks/useInternetIdentity.ts, frontend/src/hooks/useInternetIdentity.tsx, frontend/src/hooks/useActor.ts, frontend/src/main.tsx, frontend/src/components/ui (compose instead).",
     "Use English for all user-facing text."
   ],
   "nonGoals": [
-    "Connecting to real bank/credit card providers for automatic transaction retrieval.",
-    "Providing legally binding financial advice or guaranteed optimization outcomes.",
-    "Real-time collaboration or chat features."
+    "Adding new authentication providers beyond Internet Identity.",
+    "Implementing external database storage or third-party APIs.",
+    "Changing the existing overall Transactions UI design, filters, or CSV mapping flow beyond what is required to switch persistence from localStorage to the backend."
   ],
   "imageRequirements": {
-    "required": [
-      "Personal finance app logo mark, minimalist, warm neutral palette (cc-spend-logo.dim_512x512.png)",
-      "Flat illustration of a budget dashboard with charts and receipt elements, warm neutral palette (spend-dashboard-illustration.dim_1600x900.png)"
-    ],
+    "required": [],
     "edits": []
-  },
-  "userProfileUpdate": {
-    "goalsToAdd": [],
-    "goalsToRemove": [],
-    "preferencesToAdd": [],
-    "preferencesToRemove": [],
-    "miscToAdd": [],
-    "miscToRemove": [],
-    "fieldsToSet": {},
-    "fieldsToDelete": []
   }
 }

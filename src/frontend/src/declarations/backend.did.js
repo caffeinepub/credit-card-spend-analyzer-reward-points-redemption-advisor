@@ -27,6 +27,27 @@ export const UserRole = IDL.Variant({
   'user' : IDL.Null,
   'guest' : IDL.Null,
 });
+export const Currency = IDL.Variant({
+  'BTC' : IDL.Null,
+  'ETH' : IDL.Null,
+  'EUR' : IDL.Null,
+  'ICP' : IDL.Null,
+  'RUB' : IDL.Null,
+  'USD' : IDL.Null,
+  'XMR' : IDL.Null,
+  'FIAT' : IDL.Null,
+});
+export const Transaction = IDL.Record({
+  'id' : IDL.Nat,
+  'date' : IDL.Text,
+  'currency' : Currency,
+  'merchant' : IDL.Text,
+  'notes' : IDL.Text,
+  'category' : IDL.Text,
+  'cardLabel' : IDL.Text,
+  'amount' : IDL.Float64,
+  'rawDescription' : IDL.Text,
+});
 export const UserProfile = IDL.Record({ 'name' : IDL.Text });
 export const RewardPoints = IDL.Record({
   'id' : IDL.Nat,
@@ -43,9 +64,26 @@ export const idlService = IDL.Service({
       [],
     ),
   'assignCallerUserRole' : IDL.Func([IDL.Principal, UserRole], [], []),
+  'bulkImportTransactions' : IDL.Func([IDL.Vec(Transaction)], [], []),
+  'createTransaction' : IDL.Func(
+      [
+        IDL.Text,
+        IDL.Text,
+        IDL.Float64,
+        Currency,
+        IDL.Text,
+        IDL.Text,
+        IDL.Text,
+        IDL.Text,
+      ],
+      [IDL.Nat],
+      [],
+    ),
+  'deleteTransaction' : IDL.Func([IDL.Nat], [], []),
   'getCallerUserProfile' : IDL.Func([], [IDL.Opt(UserProfile)], ['query']),
   'getCallerUserRole' : IDL.Func([], [UserRole], ['query']),
   'getRewardProfiles' : IDL.Func([], [IDL.Vec(RewardPoints)], ['query']),
+  'getTransactions' : IDL.Func([], [IDL.Vec(Transaction)], ['query']),
   'getUserProfile' : IDL.Func(
       [IDL.Principal],
       [IDL.Opt(UserProfile)],
@@ -53,6 +91,7 @@ export const idlService = IDL.Service({
     ),
   'isCallerAdmin' : IDL.Func([], [IDL.Bool], ['query']),
   'saveCallerUserProfile' : IDL.Func([UserProfile], [], []),
+  'updateTransaction' : IDL.Func([IDL.Nat, Transaction], [], []),
 });
 
 export const idlInitArgs = [];
@@ -77,6 +116,27 @@ export const idlFactory = ({ IDL }) => {
     'user' : IDL.Null,
     'guest' : IDL.Null,
   });
+  const Currency = IDL.Variant({
+    'BTC' : IDL.Null,
+    'ETH' : IDL.Null,
+    'EUR' : IDL.Null,
+    'ICP' : IDL.Null,
+    'RUB' : IDL.Null,
+    'USD' : IDL.Null,
+    'XMR' : IDL.Null,
+    'FIAT' : IDL.Null,
+  });
+  const Transaction = IDL.Record({
+    'id' : IDL.Nat,
+    'date' : IDL.Text,
+    'currency' : Currency,
+    'merchant' : IDL.Text,
+    'notes' : IDL.Text,
+    'category' : IDL.Text,
+    'cardLabel' : IDL.Text,
+    'amount' : IDL.Float64,
+    'rawDescription' : IDL.Text,
+  });
   const UserProfile = IDL.Record({ 'name' : IDL.Text });
   const RewardPoints = IDL.Record({
     'id' : IDL.Nat,
@@ -97,9 +157,26 @@ export const idlFactory = ({ IDL }) => {
         [],
       ),
     'assignCallerUserRole' : IDL.Func([IDL.Principal, UserRole], [], []),
+    'bulkImportTransactions' : IDL.Func([IDL.Vec(Transaction)], [], []),
+    'createTransaction' : IDL.Func(
+        [
+          IDL.Text,
+          IDL.Text,
+          IDL.Float64,
+          Currency,
+          IDL.Text,
+          IDL.Text,
+          IDL.Text,
+          IDL.Text,
+        ],
+        [IDL.Nat],
+        [],
+      ),
+    'deleteTransaction' : IDL.Func([IDL.Nat], [], []),
     'getCallerUserProfile' : IDL.Func([], [IDL.Opt(UserProfile)], ['query']),
     'getCallerUserRole' : IDL.Func([], [UserRole], ['query']),
     'getRewardProfiles' : IDL.Func([], [IDL.Vec(RewardPoints)], ['query']),
+    'getTransactions' : IDL.Func([], [IDL.Vec(Transaction)], ['query']),
     'getUserProfile' : IDL.Func(
         [IDL.Principal],
         [IDL.Opt(UserProfile)],
@@ -107,6 +184,7 @@ export const idlFactory = ({ IDL }) => {
       ),
     'isCallerAdmin' : IDL.Func([], [IDL.Bool], ['query']),
     'saveCallerUserProfile' : IDL.Func([UserProfile], [], []),
+    'updateTransaction' : IDL.Func([IDL.Nat, Transaction], [], []),
   });
 };
 

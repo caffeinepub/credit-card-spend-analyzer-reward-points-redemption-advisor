@@ -31,13 +31,22 @@ export const CATEGORIES = [
   'Other',
 ];
 
-export const CURRENCIES = ['USD', 'EUR', 'GBP', 'CAD'];
+export const CURRENCIES = ['USD', 'EUR', 'GBP', 'CAD', 'BTC', 'ETH', 'ICP'];
 
 export function formatCurrency(amount: number, currency: string = 'USD'): string {
-  return new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency,
-  }).format(amount);
+  // Handle crypto currencies differently
+  if (['BTC', 'ETH', 'ICP', 'XMR'].includes(currency)) {
+    return `${amount.toFixed(8)} ${currency}`;
+  }
+  
+  try {
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: currency === 'GBP' ? 'GBP' : currency === 'EUR' ? 'EUR' : 'USD',
+    }).format(amount);
+  } catch {
+    return `${amount.toFixed(2)} ${currency}`;
+  }
 }
 
 export function parseDate(dateStr: string): Date | null {

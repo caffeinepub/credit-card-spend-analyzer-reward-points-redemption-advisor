@@ -10,6 +10,14 @@ import type { ActorMethod } from '@icp-sdk/core/agent';
 import type { IDL } from '@icp-sdk/core/candid';
 import type { Principal } from '@icp-sdk/core/principal';
 
+export type Currency = { 'BTC' : null } |
+  { 'ETH' : null } |
+  { 'EUR' : null } |
+  { 'ICP' : null } |
+  { 'RUB' : null } |
+  { 'USD' : null } |
+  { 'XMR' : null } |
+  { 'FIAT' : null };
 export interface RedemptionOption {
   'id' : bigint,
   'pointsRequired' : bigint,
@@ -27,6 +35,17 @@ export interface RewardPoints {
   'balance' : bigint,
   'options' : Array<RedemptionOption>,
 }
+export interface Transaction {
+  'id' : bigint,
+  'date' : string,
+  'currency' : Currency,
+  'merchant' : string,
+  'notes' : string,
+  'category' : string,
+  'cardLabel' : string,
+  'amount' : number,
+  'rawDescription' : string,
+}
 export interface UserProfile { 'name' : string }
 export type UserRole = { 'admin' : null } |
   { 'user' : null } |
@@ -36,12 +55,20 @@ export interface _SERVICE {
   'addRedemptionOption' : ActorMethod<[bigint, RedemptionOption], bigint>,
   'addRewardProfile' : ActorMethod<[bigint, Array<RedemptionOption>], bigint>,
   'assignCallerUserRole' : ActorMethod<[Principal, UserRole], undefined>,
+  'bulkImportTransactions' : ActorMethod<[Array<Transaction>], undefined>,
+  'createTransaction' : ActorMethod<
+    [string, string, number, Currency, string, string, string, string],
+    bigint
+  >,
+  'deleteTransaction' : ActorMethod<[bigint], undefined>,
   'getCallerUserProfile' : ActorMethod<[], [] | [UserProfile]>,
   'getCallerUserRole' : ActorMethod<[], UserRole>,
   'getRewardProfiles' : ActorMethod<[], Array<RewardPoints>>,
+  'getTransactions' : ActorMethod<[], Array<Transaction>>,
   'getUserProfile' : ActorMethod<[Principal], [] | [UserProfile]>,
   'isCallerAdmin' : ActorMethod<[], boolean>,
   'saveCallerUserProfile' : ActorMethod<[UserProfile], undefined>,
+  'updateTransaction' : ActorMethod<[bigint, Transaction], undefined>,
 }
 export declare const idlService: IDL.ServiceClass;
 export declare const idlInitArgs: IDL.Type[];

@@ -4,5 +4,12 @@
   "frontend/src/components/rewards/RedemptionRecommendations.tsx": "Shows ranked redemption recommendations with configurable low-value threshold, sorting options, and detailed explanations for each option.",
   "frontend/src/components/settings/EarningRatesEditor.tsx": "Editor for configuring earning rate assumptions by category, used to estimate points earned from spending.",
   "frontend/src/index.css": "Global styles with warm neutral OKLCH color palette (avoiding blue/purple) for light and dark modes, suitable for a personal finance application.",
-  "frontend/tailwind.config.js": "Tailwind configuration extending the theme with warm neutral color tokens and custom design system for the finance app aesthetic."
+  "frontend/tailwind.config.js": "Tailwind configuration extending the theme with warm neutral color tokens and custom design system for the finance app aesthetic.",
+  "frontend/src/hooks/useTransactions.ts": "React Query hooks for managing transactions via backend actor, including CRUD operations and bulk import with proper type conversions between frontend and backend formats.",
+  "frontend/src/types/transactions.ts": "Transaction type definitions and helper functions for formatting currency and parsing dates, supporting both fiat and crypto currencies.",
+  "frontend/src/components/transactions/TransactionForm.tsx": "Form component for adding and editing transactions with validation, using backend-backed mutations and proper error handling.",
+  "frontend/src/components/transactions/TransactionsTable.tsx": "Table component displaying transactions with edit/delete actions, using backend-backed transaction IDs and confirmation dialogs.",
+  "frontend/src/components/transactions/CsvImportWizard.tsx": "Multi-step wizard for importing transactions from CSV files, mapping columns and previewing data before bulk import to backend.",
+  "frontend/src/pages/DashboardPage.tsx": "Dashboard page displaying spending analytics, charts, and insights using backend-persisted transactions with loading and empty states.",
+  "frontend/src/components/dashboard/PointsEstimateSummary.tsx": "Card component showing estimated points earned from transactions based on earning rate assumptions, with category breakdown."
 }

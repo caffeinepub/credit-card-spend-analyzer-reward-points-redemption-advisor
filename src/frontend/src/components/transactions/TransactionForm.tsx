@@ -64,13 +64,17 @@ export default function TransactionForm({ transaction, onSuccess }: TransactionF
       rawDescription: formData.rawDescription.trim(),
     };
 
-    if (isEditing) {
-      await updateTransaction.mutateAsync({ ...data, id: transaction.id });
-    } else {
-      await addTransaction.mutateAsync(data);
+    try {
+      if (isEditing) {
+        await updateTransaction.mutateAsync({ ...data, id: transaction.id });
+      } else {
+        await addTransaction.mutateAsync(data);
+      }
+      onSuccess();
+    } catch (error) {
+      // Error is already handled by the mutation's onError
+      console.error('Form submission error:', error);
     }
-
-    onSuccess();
   };
 
   const isPending = addTransaction.isPending || updateTransaction.isPending;

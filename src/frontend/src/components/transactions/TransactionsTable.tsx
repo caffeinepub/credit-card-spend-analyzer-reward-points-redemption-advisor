@@ -34,8 +34,13 @@ export default function TransactionsTable({ transactions, onEdit }: Transactions
 
   const handleDelete = async () => {
     if (deleteId) {
-      await deleteTransaction.mutateAsync(deleteId);
-      setDeleteId(null);
+      try {
+        await deleteTransaction.mutateAsync(deleteId);
+        setDeleteId(null);
+      } catch (error) {
+        // Error is already handled by the mutation's onError
+        console.error('Delete error:', error);
+      }
     }
   };
 

@@ -1,395 +1,63 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Credit Card Spend Analyzer + Reward Points Advisor (Frontend)",
+  "title": "Migrate transactions workflow from localStorage to Motoko backend actor",
   "requirements": [
     {
-      "id": "REQ-1",
-      "summary": "Add Internet Identity sign-in UI, marketing/intro for guests, and authenticated-only access to user-scoped data (including initial user profile setup).",
+      "id": "REQ-13",
+      "summary": "Replace localStorage transactions with backend-persisted transactions via the authenticated actor while keeping existing Transactions UI/UX working end-to-end.",
       "acceptanceCriteria": [
-        "Unauthenticated users can view a marketing/intro screen but cannot create/view saved data.",
-        "Authenticated users only see their own transactions and reward data.",
-        "Signing out and signing in with a different identity shows a separate dataset."
+        "The React Query hooks in frontend/src/hooks/useTransactions.ts fetch and mutate transactions via the backend actor instead of using localStorage.",
+        "Add, edit, and delete actions in the Transactions page update backend data and automatically refresh the table using React Query invalidation.",
+        "The CSV import wizard imports transactions by calling the backend bulk-create endpoint through the updated hook and shows the same success/error toast behavior.",
+        "When the user logs out and logs back in with a different Internet Identity, transactions displayed are scoped to the currently authenticated user (no cross-user leakage)."
       ],
       "file_operations": [
-        {
-          "path": "frontend/src/App.tsx",
-          "operation": "create",
-          "description": "Create the app root with routing and an auth-aware layout: show a public Landing/Intro screen when unauthenticated, and protect authenticated routes (Dashboard/Transactions/Rewards/Help) behind an AuthGate. Use the selected \"authorization\" component guidance for Internet Identity session handling (login/logout) and ensuring cached data is cleared on logout via React Query. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/components/auth/AuthGate.tsx",
-          "operation": "create",
-          "description": "Implement an AuthGate wrapper that checks Internet Identity state (via the immutable useInternetIdentity hook) and renders either the public marketing view or the authenticated shell. Ensure it blocks any data screens while identity is missing, and provides a graceful 'Access denied / please sign in' UX for guests. Use the selected \"authorization\" component guidance for access control UI patterns and logout cache clearing. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/components/auth/LoginButton.tsx",
-          "operation": "create",
-          "description": "Add a login/logout button that uses the immutable useInternetIdentity hook and clears React Query cache on logout. Base behavior on the selected \"authorization\" component's Login Component guidance, but adapt styling to the app theme. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/hooks/useCurrentUserProfile.ts",
-          "operation": "create",
-          "description": "Create React Query hooks for loading/saving the caller's user profile using useActor + backend getCallerUserProfile/saveCallerUserProfile, following the selected \"authorization\" component guidance (including preventing profile-setup modal flash via actor dependency-aware loading state). Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/components/auth/ProfileSetupModal.tsx",
-          "operation": "create",
-          "description": "Add a first-login modal to ask for the user's name (UserProfile.name) if getCallerUserProfile returns null; save via saveCallerUserProfile and thereafter show the name in the header. Use shadcn-ui Dialog/Form primitives from frontend/src/components/ui (do not modify ui components). Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/components/layout/AppShell.tsx",
-          "operation": "create",
-          "description": "Create a consistent authenticated app shell (header + nav + content container). Header should show the app logo (REQ-11) and user display name from the saved profile; include LoginButton for logout. Use shadcn-ui layout primitives as needed (Card, Button, Separator, etc.) from frontend/src/components/ui. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/pages/LandingPage.tsx",
-          "operation": "create",
-          "description": "Create a public marketing/intro screen that explains what the app does, includes disclaimer teaser (full in Help), and provides a prominent sign-in call to action with the logo (REQ-11). Use the selected \"authorization\" component guidance to ensure guests cannot navigate into authenticated data screens. Verify the component's usage instructions before implementing."
-        }
-      ]
-    },
-    {
-      "id": "REQ-3",
-      "summary": "Build Transactions workflow UI: manual entry form, editable table, and client-side filtering (date range, merchant, category, card label).",
-      "acceptanceCriteria": [
-        "User can add a transaction from a form and see it immediately in the table.",
-        "User can edit and delete transactions from the table.",
-        "Filters update the visible list without a full page refresh."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/types/transactions.ts",
-          "operation": "create",
-          "description": "Define frontend Transaction types used by forms, tables, analytics, and CSV import (date, merchant, amount, currency, category, cardLabel, notes, rawDescription), plus filter types and helpers for parsing/formatting."
-        },
         {
           "path": "frontend/src/hooks/useTransactions.ts",
-          "operation": "create",
-          "description": "Create React Query hooks for listing and mutating transactions using the backend actor (capabilities added in backend later). Keep UI responsive via optimistic updates where safe; ensure queries are scoped per authenticated user by virtue of Internet Identity + per-user backend isolation. Handle authorization failures by showing a friendly message and redirecting to Landing/AuthGate behavior (per selected \"authorization\" component guidance). Verify the component's usage instructions before implementing."
+          "operation": "modify",
+          "description": "Replace localStorage query/mutations with backend actor calls (getTransactions/createTransaction/updateTransaction/deleteTransaction/bulkImportTransactions) using useActor; gate queries on actor availability, handle authorization failures gracefully, and keep the existing toast success/error behavior with React Query invalidation."
         },
         {
-          "path": "frontend/src/pages/TransactionsPage.tsx",
-          "operation": "create",
-          "description": "Implement the Transactions screen with: (1) a manual entry form, (2) filter controls (date range, merchant text, category, card label), and (3) an editable table. Use shadcn-ui Form controls, Table, Button, Dropdown/Select, and Dialog for edit/delete confirmation. Verify the component's usage instructions before implementing."
+          "path": "frontend/src/types/transactions.ts",
+          "operation": "modify",
+          "description": "Align the frontend Transaction type (especially id and currency) with the backend interface so backend-returned transactions can be displayed/edited without type mismatches; ensure helpers (formatting/parsing) remain compatible."
         },
         {
           "path": "frontend/src/components/transactions/TransactionForm.tsx",
-          "operation": "create",
-          "description": "Create a reusable transaction form used for both 'Add' and 'Edit' flows with validation (required: date, merchant/description, amount; optional: category, currency, card label, notes, raw description). Use shadcn-ui form primitives from frontend/src/components/ui. Verify the component's usage instructions before implementing."
+          "operation": "modify",
+          "description": "Ensure add/edit flows use the updated mutations from useTransactions and correctly pass backend-backed transaction ids/types; keep current validation and UI behavior unchanged."
         },
         {
           "path": "frontend/src/components/transactions/TransactionsTable.tsx",
-          "operation": "create",
-          "description": "Create an editable table component that renders transactions, supports inline actions (edit/delete), and updates without full page refresh by leveraging React Query cache updates. Use shadcn-ui Table + Buttons + Dialog/AlertDialog for destructive actions. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/components/transactions/TransactionFilters.tsx",
-          "operation": "create",
-          "description": "Create filter controls for date range, merchant text search, category select, and card label; implement client-side filtering on already-fetched data (and optionally pass date range to backend list call when available). Use shadcn-ui Input/Select/Popover/Calendar patterns as available. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/App.tsx",
           "operation": "modify",
-          "description": "Wire TransactionsPage into the authenticated navigation and router so it is reachable from the main nav in AppShell."
-        }
-      ]
-    },
-    {
-      "id": "REQ-4",
-      "summary": "Add client-side CSV import with column mapping, preview, and saving imported rows as transactions.",
-      "acceptanceCriteria": [
-        "User can upload a CSV file and preview parsed rows before saving.",
-        "User can map CSV columns to required fields (at minimum: date, merchant/description, amount).",
-        "Imported rows are saved as transactions and appear in analytics."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/utils/csv.ts",
-          "operation": "create",
-          "description": "Implement a small client-side CSV parser and normalizer (no external APIs): read file text, detect delimiter, parse headers/rows, and provide utilities to coerce date/amount; return row-level parse warnings for preview."
+          "description": "Update delete/edit actions to work with backend-backed transaction ids (as returned by the backend) and keep the existing confirmation dialog and table interactions unchanged."
         },
         {
           "path": "frontend/src/components/transactions/CsvImportWizard.tsx",
-          "operation": "create",
-          "description": "Create a CSV import wizard component with steps: upload, column mapping (date, merchant/description, amount; optional category), preview rows with validation warnings, and confirm to persist. Use shadcn-ui Dialog/Drawer, Table, Select, Button, and Alert components. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/pages/TransactionsPage.tsx",
           "operation": "modify",
-          "description": "Add an 'Import CSV' action that opens CsvImportWizard and, on confirm, persists imported rows via useTransactions bulk-create behavior (or sequential creates) and updates the list so imported items immediately appear."
+          "description": "Keep the existing CSV upload/mapping/preview flow, but route the final import through the updated bulk import hook so it persists to the backend and preserves existing success/error toast behavior."
         }
       ]
     },
     {
-      "id": "REQ-5",
-      "summary": "Create spending analytics views (monthly totals, category breakdown, top merchants) with deterministic insights computed from stored transactions and date-range controls.",
+      "id": "REQ-14",
+      "summary": "Ensure Dashboard analytics and points estimates use the backend-persisted transactions dataset and update automatically after mutations/imports.",
       "acceptanceCriteria": [
-        "Dashboard shows at least: total spend in range, monthly totals chart, category breakdown chart, top merchants list.",
-        "User can change the date range and all metrics/charts update accordingly.",
-        "Insights are computed deterministically from stored transactions (no external APIs)."
+        "Dashboard charts/insights and the points estimate summary use the same transactions query source as the Transactions page after the backend migration of hooks.",
+        "After importing or adding a transaction, navigating to the Dashboard reflects updated analytics without requiring a manual refresh.",
+        "Empty-state behavior remains correct on Dashboard when the backend returns no transactions."
       ],
       "file_operations": [
-        {
-          "path": "frontend/src/utils/analytics.ts",
-          "operation": "create",
-          "description": "Implement deterministic analytics helpers to compute: total spend in range, monthly totals, category totals, top merchants, biggest category, month-over-month change, and average monthly spend for selected date range, based solely on stored transactions."
-        },
-        {
-          "path": "frontend/src/components/dashboard/DateRangePicker.tsx",
-          "operation": "create",
-          "description": "Create a reusable date range picker used by Dashboard (and optionally Transactions filters) to drive analytics computations. Use shadcn-ui Popover/Calendar patterns if available. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/components/dashboard/MonthlyTotalsChart.tsx",
-          "operation": "create",
-          "description": "Create a lightweight monthly totals chart component (e.g., simple SVG or div-based bar chart) with themed styling; no external APIs. Use shadcn-ui Card for framing. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/components/dashboard/CategoryBreakdownChart.tsx",
-          "operation": "create",
-          "description": "Create a category breakdown visualization (e.g., horizontal bars or simple donut using SVG) with labels and totals. Keep deterministic calculations in utils/analytics.ts. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/components/dashboard/TopMerchantsList.tsx",
-          "operation": "create",
-          "description": "Create a top merchants list component showing merchant and total spend, with consistent formatting and theming. Use shadcn-ui Table or list styling. Verify the component's usage instructions before implementing."
-        },
         {
           "path": "frontend/src/pages/DashboardPage.tsx",
-          "operation": "create",
-          "description": "Implement the Dashboard page: fetch transactions (via useTransactions), apply date range selection, render total spend, charts, top merchants, and insights (biggest category, MoM change, average monthly spend). Show an empty state with the illustration asset (REQ-11) when there are no transactions."
-        },
-        {
-          "path": "frontend/src/App.tsx",
           "operation": "modify",
-          "description": "Wire DashboardPage into authenticated navigation and router as the primary authenticated landing view."
-        }
-      ]
-    },
-    {
-      "id": "REQ-6",
-      "summary": "Build Rewards Points module UI to manage reward profiles and redemption options, and compute/display cents-per-point (CPP) per option.",
-      "acceptanceCriteria": [
-        "User can add/edit/delete a reward program profile and multiple redemption options under it.",
-        "App calculates cents-per-point (CPP) for each option using user-provided numbers and displays it clearly.",
-        "Reward program data is persisted per user."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/types/rewards.ts",
-          "operation": "create",
-          "description": "Define frontend reward profile and redemption option types aligned with backend.d.ts (RewardPoints, RedemptionOption) plus UI helper types (form state, computed fields like net value and cpp)."
-        },
-        {
-          "path": "frontend/src/utils/rewardsMath.ts",
-          "operation": "create",
-          "description": "Implement pure functions to compute CPP and net value after fees/surcharges using user-entered numbers; ensure formatting and rounding rules are consistent across the app."
-        },
-        {
-          "path": "frontend/src/hooks/useRewardProfiles.ts",
-          "operation": "create",
-          "description": "Create React Query hooks for reading and mutating reward profiles via useActor (getRewardProfiles/addRewardProfile/addRedemptionOption, and placeholders for update/delete if/when added). Handle authorization failures gracefully per the selected \"authorization\" component guidance. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/components/rewards/RewardProfileForm.tsx",
-          "operation": "create",
-          "description": "Create a form for adding/editing a reward program profile (including point balance). Use shadcn-ui Form/Input components and consistent finance-friendly formatting. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/components/rewards/RedemptionOptionForm.tsx",
-          "operation": "create",
-          "description": "Create a form for adding/editing a redemption option with required fields for value computation (points required, cash value, fees/surcharges, restrictions notes, type). Compute and preview CPP as the user types. Use shadcn-ui Select/Input/Textarea and Dialog/Sheet patterns as appropriate. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/components/rewards/RewardProfilesList.tsx",
-          "operation": "create",
-          "description": "Create a UI to list reward profiles and their options, with actions to add/edit/delete profiles and options. Use shadcn-ui Card/Accordion/Table for nested display; show computed CPP next to each option. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/pages/RewardsPage.tsx",
-          "operation": "create",
-          "description": "Implement the Rewards screen: fetch profiles, manage forms/modals for CRUD interactions, and display computed CPP for each option clearly. Ensure all text is in English."
-        },
-        {
-          "path": "frontend/src/App.tsx",
-          "operation": "modify",
-          "description": "Wire RewardsPage into authenticated navigation and router."
-        }
-      ]
-    },
-    {
-      "id": "REQ-7",
-      "summary": "Provide redemption guidance: rank options by CPP by default, show net value after fees and an English explanation, and flag low-value options with a user-configurable CPP threshold.",
-      "acceptanceCriteria": [
-        "Options are sortable and a default 'Best value' ranking is shown.",
-        "Each option displays: effective CPP, net value after fees, and a short explanation in English.",
-        "Low-value options are clearly flagged based on a defined threshold configurable in the UI (e.g., user can set 'flag below X CPP')."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/utils/recommendations.ts",
-          "operation": "create",
-          "description": "Implement deterministic recommendation logic: compute effective CPP and net value after fees; produce a ranked list and a short plain-English explanation string per option; define low-value flag rules based on a configurable threshold."
-        },
-        {
-          "path": "frontend/src/hooks/useRewardAdvisorySettings.ts",
-          "operation": "create",
-          "description": "Implement UI state for advisory settings (e.g., 'flag below X CPP') using local storage so it persists across reloads without needing backend changes."
-        },
-        {
-          "path": "frontend/src/components/rewards/RedemptionRecommendations.tsx",
-          "operation": "create",
-          "description": "Create a recommendations panel that shows default 'Best value' ranking, supports sorting, displays effective CPP + net value after fees, and includes the plain-English explanation and low-value flags. Use shadcn-ui Badge/Alert/Select components for flags and sorting controls. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/pages/RewardsPage.tsx",
-          "operation": "modify",
-          "description": "Integrate RedemptionRecommendations into the Rewards screen and add the user-configurable CPP threshold control."
-        }
-      ]
-    },
-    {
-      "id": "REQ-8",
-      "summary": "Connect spending analytics to reward strategy via user-defined earning-rate assumptions by category (optionally by card label) and show estimated points earned for the selected date range.",
-      "acceptanceCriteria": [
-        "User can define earning rates by category (and optionally by card label).",
-        "App shows estimated points earned by category and total points for the selected range.",
-        "Estimates are clearly labeled as estimates and are based solely on user-defined rates and stored spend."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/types/earningRates.ts",
-          "operation": "create",
-          "description": "Define frontend types for earning-rate assumptions (category -> multiplier, optional cardLabel overrides) used for point estimates."
-        },
-        {
-          "path": "frontend/src/hooks/useEarningRates.ts",
-          "operation": "create",
-          "description": "Implement persistence for earning-rate assumptions using local storage (until backend support is available), and expose CRUD helpers for the UI. Ensure the UI clearly labels these as user-defined assumptions."
-        },
-        {
-          "path": "frontend/src/utils/pointsEstimate.ts",
-          "operation": "create",
-          "description": "Implement deterministic estimation logic that takes stored transactions + earning-rate assumptions and outputs estimated points by category and total points for the selected date range; ensure results are explicitly labeled as estimates."
+          "description": "Confirm Dashboard continues to read transactions exclusively via useTransactions (now backed by the actor), and ensure empty/loading states remain correct when the backend returns an empty list."
         },
         {
           "path": "frontend/src/components/dashboard/PointsEstimateSummary.tsx",
-          "operation": "create",
-          "description": "Create a Dashboard panel showing estimated points earned by category and total for the selected date range, including an 'Estimates' label and brief explanation. Use shadcn-ui Card/Table/Badge components. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/components/settings/EarningRatesEditor.tsx",
-          "operation": "create",
-          "description": "Create an editor UI for defining earning rates by category and optional card label overrides, with validation and explanatory helper text. Use shadcn-ui Form/Input/Select components. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/pages/DashboardPage.tsx",
           "operation": "modify",
-          "description": "Add PointsEstimateSummary to the Dashboard and compute estimates from the same selected date range used for spend analytics."
-        },
-        {
-          "path": "frontend/src/pages/RewardsPage.tsx",
-          "operation": "modify",
-          "description": "Add a small 'Earning rates' section (or link) so users can manage assumptions from Rewards as well, keeping the layout consistent with the rest of the app."
-        }
-      ]
-    },
-    {
-      "id": "REQ-9",
-      "summary": "Add an onboarding/help section accessible from navigation with English instructions, CSV import expectations, CPP calculation explanation, and a clear disclaimer.",
-      "acceptanceCriteria": [
-        "Help page/section is accessible from the main navigation.",
-        "Text is in English and includes a clear disclaimer.",
-        "Explains CSV import expectations and how CPP is calculated."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/pages/HelpPage.tsx",
-          "operation": "create",
-          "description": "Create a Help page that explains: app workflow (Transactions -> Analytics -> Rewards), CSV import expectations (required columns, mapping step, date/amount formatting tips), how CPP is calculated (cash value minus fees divided by points, expressed in cents), and a clear educational/not-financial-advice disclaimer. Use shadcn-ui Typography/Card components (or Tailwind prose styling) for readable layout. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/App.tsx",
-          "operation": "modify",
-          "description": "Wire HelpPage into the authenticated main navigation and router so it is always reachable."
-        }
-      ]
-    },
-    {
-      "id": "REQ-10",
-      "summary": "Apply a distinct, cohesive personal-finance visual theme (non-blue/purple primary) across layout, forms, tables, and charts with consistent spacing and typography.",
-      "acceptanceCriteria": [
-        "All primary screens share consistent header/nav, typography scale, and spacing rules.",
-        "Theme is applied consistently to cards, tables, forms, and charts.",
-        "Theme does not rely on blue/purple as the primary palette."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/index.css",
-          "operation": "create",
-          "description": "Create global theme tokens using CSS variables compatible with the existing Tailwind setup (oklch var-based palette). Choose a warm neutral primary palette (avoid blue/purple as primary) and define consistent foreground/background/card/border/chart colors; include typography defaults for a finance-tool feel."
-        },
-        {
-          "path": "frontend/tailwind.config.js",
-          "operation": "modify",
-          "description": "Adjust theme extensions as needed to support the warm neutral palette and consistent chart colors (chart.1-5), keeping the existing CSS variable approach intact."
-        },
-        {
-          "path": "frontend/src/components/layout/AppShell.tsx",
-          "operation": "modify",
-          "description": "Ensure the authenticated shell applies consistent spacing, container width, header/nav styling, and reusable page layout patterns (page title, actions area)."
-        },
-        {
-          "path": "frontend/src/pages/DashboardPage.tsx",
-          "operation": "modify",
-          "description": "Apply consistent layout primitives (cards, section headers, spacing) and theme-consistent chart styling so it does not look like a default template."
-        },
-        {
-          "path": "frontend/src/pages/TransactionsPage.tsx",
-          "operation": "modify",
-          "description": "Apply consistent theme styling to the transactions form/table/filters (cards, inputs, buttons, table density) using shadcn-ui components and Tailwind utility classes."
-        },
-        {
-          "path": "frontend/src/pages/RewardsPage.tsx",
-          "operation": "modify",
-          "description": "Apply consistent theme styling to rewards lists, forms, badges/alerts for low-value flags, and recommendations ranking panel."
-        }
-      ]
-    },
-    {
-      "id": "REQ-11",
-      "summary": "Add and display generated static image assets (logo + dashboard illustration) in header/login and on landing/empty states.",
-      "acceptanceCriteria": [
-        "Generated images are stored under frontend/public/assets/generated and referenced directly by the frontend.",
-        "Logo is visible on the sign-in/landing area and in the authenticated app header.",
-        "Illustration appears on at least one empty state (e.g., no transactions yet)."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/public/assets/generated/cc-spend-logo.dim_512x512.png",
-          "operation": "create",
-          "description": "Add the generated logo asset at the exact path frontend/public/assets/generated/cc-spend-logo.dim_512x512.png."
-        },
-        {
-          "path": "frontend/public/assets/generated/spend-dashboard-illustration.dim_1600x900.png",
-          "operation": "create",
-          "description": "Add the generated illustration asset at the exact path frontend/public/assets/generated/spend-dashboard-illustration.dim_1600x900.png."
-        },
-        {
-          "path": "frontend/src/pages/LandingPage.tsx",
-          "operation": "modify",
-          "description": "Reference and display the logo from frontend/public/assets/generated/cc-spend-logo.dim_512x512.png in the public sign-in/landing area."
-        },
-        {
-          "path": "frontend/src/components/layout/AppShell.tsx",
-          "operation": "modify",
-          "description": "Reference and display the logo from frontend/public/assets/generated/cc-spend-logo.dim_512x512.png in the authenticated header."
-        },
-        {
-          "path": "frontend/src/pages/DashboardPage.tsx",
-          "operation": "modify",
-          "description": "Use frontend/public/assets/generated/spend-dashboard-illustration.dim_1600x900.png in an empty state when there are no transactions yet (and optionally add a call-to-action to add/import transactions)."
+          "description": "Verify points estimate calculations remain compatible with backend-returned Transaction typing after the migration (no localStorage coupling) and keep existing empty-state messaging."
         }
       ]
     }
